@@ -6,8 +6,8 @@ var Schema = mongoose.Schema;
 
 // Modelo de COMMENT
 var CommentSchema = Schema({
-    content: string,
-    date: { type: date, default: date.now },
+    content: String,
+    date: { type: Date, default: Date.now },
     user: { type: Schema.ObjectId, ref: 'User' },
 
 });
@@ -16,11 +16,11 @@ var Comment = mongoose.model('Comment', CommentSchema);
 
 // Modelo de TOPIC
 var TopicSchema = Schema({
-    title: string,
-    content: string,
-    code: string,
-    lang: string,
-    date: { type: date, default: date.now },
+    title: String,
+    content: String,
+    code: String,
+    lang: String,
+    date: { type: Date, default: Date.now },
     user: { type: Schema.ObjectId, ref: 'User' },
     comments: [CommentSchema]
 });
