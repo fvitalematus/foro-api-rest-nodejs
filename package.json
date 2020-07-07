@@ -4,11 +4,12 @@
   "description": "API RESTful con NodeJS",
   "main": "index.js",
   "scripts": {
+    "start": "nodemon index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": ""
+    "url": "https://github.com/fvitalematus/foro-api-rest-nodejs.git"
   },
   "author": "Franco Vitale",
   "license": "MIT",
