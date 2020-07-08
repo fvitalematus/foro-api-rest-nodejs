@@ -23,12 +23,17 @@ var controller = {
         var params = req.body;
 
         // Validar los datos.
-        var validate_name = !validator.isEmpty(params.name);
-        var validate_surname = !validator.isEmpty(params.surname);
-        var validate_email = !validator.isEmpty(params.email) && validator.isEmail(params.email);
-        var validate_password = !validator.isEmpty(params.password);
-
-        // console.log(validate_name, validate_surname, validate_email, validate_password);
+        try {
+            var validate_name = !validator.isEmpty(params.name);
+            var validate_surname = !validator.isEmpty(params.surname);
+            var validate_email = !validator.isEmpty(params.email) && validator.isEmail(params.email);
+            var validate_password = !validator.isEmpty(params.password);
+            // console.log(validate_name, validate_surname, validate_email, validate_password);
+        } catch (err) {
+            return res.status(200).send({
+                message: "Faltan datos por enviar"
+            });
+        }
 
         if (validate_name && validate_surname && validate_email && validate_password) {
             // Crear el objeto de usuario.
@@ -99,8 +104,15 @@ var controller = {
         var params = req.body;
 
         // Validar los datos.
-        var validate_email = !validator.isEmpty(params.email) && validator.isEmail(params.email);;
-        var validate_password = !validator.isEmpty(params.password);
+        try {
+            var validate_email = !validator.isEmpty(params.email) && validator.isEmail(params.email);;
+            var validate_password = !validator.isEmpty(params.password);
+
+        } catch (err) {
+            return res.status(200).send({
+                message: "Faltan datos por enviar"
+            });
+        }
 
         if (!validate_email || !validate_password) {
             return res.status(500).send({
@@ -162,12 +174,75 @@ var controller = {
     },
 
     update: function (req, res) {
-        // Crear middleware para comprobar el jwt token, integrarlo a la ruta.
 
-        
-        return res.status(200).send({
-            message: "metodo de actualización de datos de usuario"
-        });
+        // Recoger los datos del usuario.
+        var params = req.body;
+
+        // Validar los datos.
+        try {
+            var validate_name = !validator.isEmpty(params.name);
+            var validate_surname = !validator.isEmpty(params.surname);
+            var validate_email = !validator.isEmpty(params.email) && validator.isEmail(params.email);
+        } catch (err) {
+            return res.status(200).send({
+                message: "Faltan datos por enviar"
+            });
+        }
+
+        // Eliminar propiedades innecesarias.
+        delete params.password;
+
+        var userId = req.user.sub;
+        // console.log(userId)
+
+        // Comprobar si el email es único.
+        if (req.user.email != params.email) {
+
+            User.findOne({ email: params.email.toLowerCase() }, (err, user) => {
+
+                if (err) {
+                    return res.status(500).send({
+                        message: "Error al intentar identificarse"
+                    });
+                }
+
+                if (user && user.email == params.email) {
+                    return res.status(200).send({
+                        message: "El email ya existe"
+                    });
+                }
+
+            });
+
+        } else {
+
+            // Buscar y Actualizar.Find&Update(condicion, datos a actualizar, opciones, callback)
+            User.findOneAndUpdate({ _id: userId }, params, { new: true }, (err, userUpdated) => {
+
+                if (err) {
+                    return res.status(500).send({
+                        status: 'error',
+                        message: 'Error al actualizar usuario'
+                    });
+                }
+
+                if (!userUpdated) {
+                    return res.status(500).send({
+                        status: 'error',
+                        message: 'No se a actualizado el usuario'
+                    });
+                }
+
+                // Devolver la respuesta  
+                return res.status(200).send({
+                    status: 'success',
+                    user: userUpdated
+                });
+
+            });
+
+        }
+
     }
 
 };
