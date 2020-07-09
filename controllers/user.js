@@ -46,7 +46,7 @@ var controller = {
             user.surname = params.surname;
             user.email = params.email.toLowerCase();
             user.role = 'ROLE_USER';
-            user.image = null;
+            user.image = null;            
 
             // Comprobar si el usuario existe.
             User.findOne({ email: user.email }, (err, issetUser) => {
