@@ -46,7 +46,7 @@ var controller = {
             user.surname = params.surname;
             user.email = params.email.toLowerCase();
             user.role = 'ROLE_USER';
-            user.image = null;            
+            user.image = null;
 
             // Comprobar si el usuario existe.
             User.findOne({ email: user.email }, (err, issetUser) => {
@@ -211,6 +211,33 @@ var controller = {
                 if (user && user.email == params.email) {
                     return res.status(200).send({
                         message: "El email ya existe"
+                    });
+
+                } else {
+                    
+                    // Buscar y Actualizar documento.
+                    User.findOneAndUpdate({ _id: userId }, params, { new: true }, (err, userUpdated) => {
+
+                        if (err) {
+                            return res.status(500).send({
+                                status: 'error',
+                                message: 'Error al actualizar usuario'
+                            });
+                        }
+
+                        if (!userUpdated) {
+                            return res.status(500).send({
+                                status: 'error',
+                                message: 'No se a actualizado el usuario'
+                            });
+                        }
+
+                        // Devolver la respuesta  
+                        return res.status(200).send({
+                            status: 'success',
+                            user: userUpdated
+                        });
+
                     });
                 }
 

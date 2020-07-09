@@ -180,6 +180,99 @@ var controller = {
                     topic
                 });
             });
+    },
+
+    update: function (req, res) {
+
+        // Recoger el id del topic de la url.
+        var topicId = req.params.id;
+
+        // Recoger los datos que llegan desde post.
+        var params = req.body;
+
+        // Validar datos
+        try {
+            var validate_title = !validator.isEmpty(params.title);
+            var validate_content = !validator.isEmpty(params.content);
+            var validate_lang = !validator.isEmpty(params.lang);
+
+        } catch (err) {
+            return res.status(200).send({
+                message: 'Faltan datos por enviar'
+            });
+        }
+
+        if (validate_title && validate_content && validate_lang) {
+
+            // Montar un json con los datos modificables.
+            var update = {
+                title: params.title,
+                content: params.content,
+                code: params.code,
+                lang: params.lang
+            };
+
+            // Find and Update del topic por id y por id de usuario.
+            Topic.findOneAndUpdate({ _id: topicId, user: req.user.sub }, update, { new: true }, (err, topicUpdated) => {
+
+                if (err) {
+                    return res.status(500).send({
+                        status: 'error',
+                        message: 'Error en la petición'
+                    });
+                }
+
+                if (!topicUpdated) {
+                    return res.status(404).send({
+                        status: 'error',
+                        message: ' No se ha actualizado el tema'
+                    });
+                }
+
+                // Devolver respuesa.
+                return res.status(200).send({
+                    status: 'success',
+                    topic: topicUpdated
+                });
+            });
+
+        } else {
+            // Devolver respuesa.
+            return res.status(200).send({
+                message: 'La validación de los datos no es correcta'
+            });
+        }
+
+    },
+
+    delete: function (req, res) {
+
+        // Sacar el id del topic de la url.
+        var topicId = req.params.id;
+
+        // Find and delete por topicID y por userID.
+        Topic.findOneAndDelete({ _id: topicId, user: req.user.sub }, (err, topicRemoved) => {
+
+            if (err) {
+                return res.status(500).send({
+                    status: 'error',
+                    message: 'Error en la petición'
+                });
+            }
+
+            if (!topicRemoved) {
+                return res.status(404).send({
+                    status: 'error',
+                    message: ' No se ha borrado el tema'
+                });
+            }
+
+            // Devolver respuesta.
+            return res.status(200).send({
+                status: 'success',
+                topic: topicRemoved
+            });
+        });
     }
 
 };
