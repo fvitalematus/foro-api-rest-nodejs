@@ -214,7 +214,7 @@ var controller = {
                     });
 
                 } else {
-                    
+
                     // Buscar y Actualizar documento.
                     User.findOneAndUpdate({ _id: userId }, params, { new: true }, (err, userUpdated) => {
 
@@ -279,56 +279,56 @@ var controller = {
         // Recoger el fichero de la petición.        
         var file_name = 'Avatar no subido...';
 
-        if (!req.files) {
-            return res.status(404).send({
-                status: 'error',
-                message: file_name
-            });
-        }
+        if (req.file) {
 
-        // Conseguir el nombre y la extension del archivo.
-        var file_path = req.files.file0.path;
-        var file_split = file_path.split('\\');
+            // Conseguir el nombre y la extension del archivo.        
+            var file_path = req.file.path;
+            var file_split = file_path.split('\\');
 
-        // Nombre del archivo
-        var file_name = file_split[2];
+            // Nombre del archivo        
+            var file_name = file_split[2];
 
-        // Extensión del archivo
-        var ext_split = file_name.split('\.');
-        var file_ext = ext_split[1];
+            // Extensión del archivo        
+            var ext_split = req.file.originalname.split('\.');  // originalname:file_name o solo req.file      
+            var file_ext = ext_split[1];
 
-        // Comprobar extension. (solo imágenes), si no es valida borrar fichero subido
-        if (file_ext != 'png' && file_ext != 'jpg' && file_ext != 'jpeg' && file_ext != 'gif') {
-            fs.unlink(file_path, (err) => {
+            // nuevo codigo
+            // Comprobar extension. (solo imágenes), si no es valida borrar fichero subido
+            if (file_ext == 'png' || file_ext == 'gif' || file_ext == 'jpg' || file_ext == 'jpeg') {
 
+                // Sacar el id del usuario identificado
+                var userId = req.user.sub;
+
+                // Buscar y actualizar documento bd
+                User.findByIdAndUpdate(userId, { image: file_name }, (err, userUpdated) => {
+
+                    if (!userUpdated) {
+                        // Devolver respuesta
+                        return res.status(404).send({
+                            status: 'error',
+                            message: 'No se ha podido actualizar el usuario'
+                        });
+                    } else {
+                        // Devolver respuesta       
+                        return res.status(200).send({
+                            status: 'success',
+                            user: userUpdated
+                        });
+                    }
+                })
+
+            } else {
                 return res.status(200).send({
                     status: 'error',
-                    message: 'La extensión del archivo no es válida'
+                    message: 'Extension del archivo no valida'
                 });
-
-            });
+            }
+            // console.log(file_path);
 
         } else {
-            // Sacar el id del usuario identificado
-            var userId = req.user.sub;
-
-            // Buscar y actualizar documento bd
-            User.findOneAndUpdate({ _id: userId }, { image: file_name }, { new: true }, (err, userUpdated) => {
-
-                if (err || !userUpdated) {
-                    // Devolver respuesta
-                    return res.status(500).send({
-                        status: 'error',
-                        message: 'Error al guardar el usuario'
-                    });
-                }
-
-                // Devolver respuesta
-                return res.status(200).send({
-                    status: 'success',
-                    user: userUpdated
-                });
-
+            return res.status(200).send({
+                status: 'error',
+                message: 'No has subido ninguna imagen..'
             });
         }
 

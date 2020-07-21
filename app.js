@@ -10,11 +10,14 @@ var app = express();
 // Cargar archivos de rutas
 var user_routes = require('./routes/user');
 var topic_routes = require('./routes/topic');
-var comment_routes = require('./routes/comment')
+var comment_routes = require('./routes/comment');
 
 // Middlewares
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
+//app.use(bodyParser.urlencoded({ extended: false }));
+//app.use(bodyParser.json());
+
+app.use(bodyParser.json({ limit: '50mb', extended: true }));
+app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 
 // Configurar cabeceras y cors
 app.use((req, res, next) => {

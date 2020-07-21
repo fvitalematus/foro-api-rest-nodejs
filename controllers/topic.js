@@ -158,6 +158,7 @@ var controller = {
         // Find por id del topic.
         Topic.findById(topicId)
             .populate('user')
+            .populate('comments.user')
             .exec((err, topic) => {
 
                 if (err) {
@@ -287,8 +288,8 @@ var controller = {
                 { "content": { "$regex": searchString, "$options": "i" } },
                 { "code": { "$regex": searchString, "$options": "i" } },
                 { "lang": { "$regex": searchString, "$options": "i" } }
-            ]
-        })
+            ]})
+            .populate('user')
             .sort([['date', 'descending']])
             .exec((err, topics) => {
 

@@ -60,11 +60,32 @@ var controller = {
                             });
                         }
 
-                        // Devolver respuesta
-                        return res.status(200).send({
-                            status: 'success',
-                            topic
-                        });
+                        // Find por id del topic.
+                        Topic.findById(topic._id)
+                            .populate('user')
+                            .populate('comments.user')
+                            .exec((err, topic) => {
+
+                                if (err) {
+                                    res.status(500).send({
+                                        status: 'error',
+                                        message: 'Error en la petición'
+                                    });
+                                }
+
+                                if (!topic) {
+                                    res.status(404).send({
+                                        status: 'error',
+                                        message: 'No existe el tema'
+                                    });
+                                }
+
+                                // Devolver resultado.
+                                return res.status(200).send({
+                                    status: 'success',
+                                    topic
+                                });
+                            });
 
                     });
 
@@ -174,12 +195,32 @@ var controller = {
                         });
                     }
 
-                    // Devolver un resultado
-                    return res.status(200).send({
-                        status: 'success',
-                        topic
-                    });
+                    // Find por id del topic.
+                    Topic.findById(topic._id)
+                        .populate('user')
+                        .populate('comments.user')
+                        .exec((err, topic) => {
 
+                            if (err) {
+                                res.status(500).send({
+                                    status: 'error',
+                                    message: 'Error en la petición'
+                                });
+                            }
+
+                            if (!topic) {
+                                res.status(404).send({
+                                    status: 'error',
+                                    message: 'No existe el tema'
+                                });
+                            }
+
+                            // Devolver resultado.
+                            return res.status(200).send({
+                                status: 'success',
+                                topic
+                            });
+                        });
                 });
 
             } else {
