@@ -1,4 +1,4 @@
-# API RESTful con Node JS: Desarrollo Back-End y tópicos con ejemplos funcionales y su versión de JavaScript.
+# API RESTful con Node JS: Desarrollo Back-End y tópicos con ejemplos funcionales y su versión en JavaScript.
 
 <p align="center"><img src="https://user-images.githubusercontent.com/66401629/88009122-bd42a280-cadf-11ea-97d5-4ecbfdbbb270.png" width="400"></p>
 
