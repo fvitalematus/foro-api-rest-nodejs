@@ -7,7 +7,7 @@
 
 </p>
 
-Este repositorio incluye: Desarrollo de un API RESTful con el framework Node JS, con el objetivo de crear una aplicación de un Foro. Primero se realizará el backend con Node JS y luego el frontend con Angular.
+Este repositorio incluye: Desarrollo de un API RESTful con el framework Node JS, con el objetivo de crear una aplicación de un Foro. Primero se realizará el backend con Node JS y luego el front-end con Angular.
 
 - MongoDB para hacer la conexión con la base de datos..
 - Modelos, controladores y rutas automatizadas.
